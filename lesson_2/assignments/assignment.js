@@ -58,25 +58,39 @@ class Adventurer extends Character {
   }
 
   duel(opponent) {
-    console.log(`\n ${this.name} vs ${opponent.name} `);
-    let round = 1;
+  console.log(`\ ${this.name} vs ${opponent.name}`);
+  let round = 1;
+  
+  while (this.health > 0 && opponent.health > 0) {
+    console.log(`Round ${round}:`);
+    const roll1 = this.roll();
+    const roll2 = opponent.roll();
     
-    while (this.health > 50 && opponent.health > 50) {
-      console.log(`Round ${round}:`);
-      const roll1 = this.roll();
-      const roll2 = opponent.roll();
-      
-      if (roll1 > roll2) opponent.takeDamage(1);
-      else if (roll2 > roll1) this.takeDamage(1);
-      else console.log("Tie!");
-      
-      round++;
+    const damage = Math.floor(Math.random() * 10) + 5;
+    
+    if (roll1 > roll2) {
+      opponent.takeDamage(damage);
+      console.log(`${this.name} hits for ${damage} damage!`);
+    } else if (roll2 > roll1) {
+      this.takeDamage(damage);
+      console.log(`${opponent.name} hits for ${damage} damage!`);
+    } else {
+      console.log("Clash! No damage.");
     }
     
-    const winner = this.health > 50 ? this : opponent;
-    console.log(`\n${winner.name} wins in ${round-1} rounds!`);
-    return winner;
+    console.log(`HP: ${this.name}=${this.health}, ${opponent.name}=${opponent.health}`);
+    round++;
+    
+    if (round > 20) {
+      console.log("\nDuel ended - too many rounds!");
+      break;
+    }
   }
+  
+  const winner = this.health > opponent.health ? this : opponent;
+  console.log(`\n${winner.name} wins in ${round-1} rounds!`);
+  return winner;
+}
 }
 
 class Companion extends Character {
@@ -177,3 +191,6 @@ conan.roll(3);
 
 console.log("\n=== GAME END ===");
 console.log("All characters ready for adventure!");
+
+
+
