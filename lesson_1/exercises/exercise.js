@@ -317,29 +317,31 @@ addNumber(1, 100);
 // Watch the visualization and understand each step.
 
 // Snippet 1: Simple function calls
-// function multiply(a, b) { return a * b; }
-// function square(n) { return multiply(n, n); }
-// console.log(square(5));
+function multiply(a, b) { return a * b; }
+function square(n) { return multiply(n, n); }
+console.log(square(5));
 
 // Snippet 2: A single setTimeout
-// console.log("Hi");
-// setTimeout(() => console.log("There"), 1000);
-// console.log("Bye");
+console.log("Hi");
+setTimeout(() => console.log("There"), 1000);
+console.log("Bye");
 
 // Snippet 3: Multiple setTimeouts with different delays
-// setTimeout(() => console.log("A"), 300);
-// setTimeout(() => console.log("B"), 100);
-// setTimeout(() => console.log("C"), 200);
+setTimeout(() => console.log("A"), 300);
+setTimeout(() => console.log("B"), 100);
+setTimeout(() => console.log("C"), 200);
 
 // Snippet 4: Nested setTimeout
-// setTimeout(() => {
-//   console.log("First");
-//   setTimeout(() => console.log("Second"), 500);
-// }, 500);
+setTimeout(() => {
+  console.log("First");
+  setTimeout(() => console.log("Second"), 500);
+}, 500);
 
 // TODO: After watching all 4 in Loupe, write a 1-sentence summary
 //       of what the event loop does:
-// ???
+// The event loop continuously checks if the call stack is empty, 
+// and if so, pushes the first callback from the callback queue onto the call 
+// stack for execution.
 
 
 // ============================================================
