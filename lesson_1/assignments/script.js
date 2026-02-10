@@ -1,21 +1,69 @@
 
-console.log("\n\nDeferred execution simulation:");
 
+const output = document.getElementById('primes-output');
+const count = document.getElementById('count');
+const time = document.getElementById('time');
+const input = document.getElementById('limit-input');
 
-console.log("Bad way (blocks):");
-for (let i = 1; i <= 3; i++) {
-  console.log(`Number ${i}`);
+function isPrime(num) {
+    for (let i = 2; i * i <= num; i++) {
+        if (num % i === 0) return false;
+    }
+    return num > 1;
 }
-console.log("Alert! (you won't see numbers until you click OK)");
 
-console.log("\nGood way (responsive):");
-function showNumbers(i) {
-  if (i <= 3) {
-    console.log(`Number ${i}`);
-    setTimeout(() => showNumbers(i + 1), 0);
-  } else {
-    console.log("Alert! (you see numbers as they appear)");
-  }
+
+function syncPrimes(n) {
+    const start = Date.now();
+    output.textContent = '';
+    let primeCount = 0;
+    
+    for (let i = 2; i <= n; i++) {
+        if (isPrime(i)) {
+            output.textContent += i + ' ';
+            primeCount++;
+        }
+    }
+    
+    count.textContent = primeCount;
+    time.textContent = Date.now() - start;
+    alert('Done!');
 }
-showNumbers(1);
 
+
+function asyncPrimes(n) {
+    const start = Date.now();
+    output.textContent = '';
+    count.textContent = '0';
+    
+    let i = 2;
+    let primeCount = 0;
+    
+    function checkNext() {
+        if (i > n) {
+            time.textContent = Date.now() - start;
+            alert('Done!');
+            return;
+        }
+        
+        if (isPrime(i)) {
+            output.textContent += i + ' ';
+            primeCount++;
+            count.textContent = primeCount;
+        }
+        
+        i++;
+        setTimeout(checkNext, 0);
+    }
+    
+    checkNext();
+}
+
+
+document.getElementById('calculate-sync').onclick = function() {
+    syncPrimes(parseInt(input.value));
+};
+
+document.getElementById('calculate-async').onclick = function() {
+    asyncPrimes(parseInt(input.value));
+};
