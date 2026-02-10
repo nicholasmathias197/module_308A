@@ -234,20 +234,31 @@ function trampoline(fn) {
   // TODO: Implement the trampoline
   // Keep calling fn() while the result is a function
   // Return the final non-function result
-}
+    let result = fn(); 
+    while (typeof result === 'function'){
+      result= result();
+    }
+    return result; 
+  }
 
 // Part C: TODO — Convert the countdown to a trampolined version
 function countdownTrampolined(n) {
   // TODO: Instead of calling itself directly,
   //       return a FUNCTION that calls itself.
   //       Base case should return a value, not a function.
+ if (n <=0){
+  console.log ("Done!"); 
+  return "Done!"; 
+ }
+console.log (n); 
+return ()=> countdownTrampolined(n -1); 
 }
 
 // Uncomment when ready:
-// console.log(trampoline(() => countdownTrampolined(5)));
+console.log(trampoline(() => countdownTrampolined(5)));
 
 // Challenge: Try running with n = 100000. Does it crash?
-// console.log(trampoline(() => countdownTrampolined(100000)));
+console.log(trampoline(() => countdownTrampolined(100000)));
 
 
 // ------------------------------------------------------------
@@ -275,10 +286,26 @@ function addNumber(i, max) {
   // - If i > max, alert "Done!" and return
   // - Otherwise, append a <p> tag with the number
   // - Use setTimeout(..., 0) to schedule the next call
+   function addNumber(i, max) {
+      // TODO: Implement deferred rendering
+      // - If i > max, alert "Done!" and return
+      // - Otherwise, append a <p> tag with the number
+      // - Use setTimeout(..., 0) to schedule the next call
+      
+      const output = document.getElementById("output");
+      
+      if (i > max) {
+        alert("Done!");
+        return;
+      }
+      
+      // Add the current number
+      output.innerHTML += `<p>Number ${i}</p>`;
+}
 }
 
 // Uncomment in browser:
-// addNumber(1, 100);
+addNumber(1, 100);
 
 
 // ------------------------------------------------------------

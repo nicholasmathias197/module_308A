@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 10: Deferred Rendering</title>
+</head>
+<body>
+    <h1>Deferred Rendering Demo</h1>
+    <div id="output"></div>
+    
+    <script>
+       const output = document.getElementById("output");
+        for (let i = 1; i <= 100; i++) {
+        output.innerHTML += `<p>${i}</p>`;
+        }
+        alert("Done!"); 
+    </script> 
