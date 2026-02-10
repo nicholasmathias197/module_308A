@@ -32,7 +32,7 @@ class Human extends Animal {
     console.log(`I have ${this.skin} skin.`);
   }
   
-  toString() { 
+  toString() {  
     return super.toString("Human"); 
   }
 }
