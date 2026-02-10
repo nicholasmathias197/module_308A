@@ -1,27 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALAB 308A.1.1 - Deferred Execution</title>
-</head>
+<html>
 <body>
-    <h1>Prime Number Calculator</h1>
+    <div id="result"></div>
     
-    <div class="container">
-        <h2>Calculate Primes Up To:</h2>
-        <input type="number" id="limit-input" value="10000" min="1" max="100000">
-        <button id="calculate-sync">Calculate Synchronously</button>
-        <button id="calculate-async">Calculate Asynchronously</button>
+    <script>
+        const result = document.getElementById('result');
         
-        <div id="primes-output"></div>
+   
+        function findPrimes(max) {
+            let n = 2;
+            
+            function checkNext() {
+                if (n <= max) {
+                 
+                    let isPrime = true;
+                    for (let i = 2; i < n; i++) {
+                        if (n % i === 0) {
+                            isPrime = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isPrime) {
+                        result.innerHTML += n + " ";
+                    }
+                    
+                    n++;
+                    
+                    // Defer next check
+                    setTimeout(checkNext, 10);
+                } else {
+                    alert("Found all primes!");
+                }
+            }
+            
+            checkNext();
+        }
         
-        <div class="stats">
-            <p>Primes found: <span id="count">0</span></p>
-            <p>Time elapsed: <span id="time">0</span>ms</p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        // Start with small number for demo
+        findPrimes(100);
+    </script>
 </body>
 </html>
