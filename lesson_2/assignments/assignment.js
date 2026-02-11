@@ -159,12 +159,12 @@ console.log(`Character.MAX_HEALTH: ${Character.MAX_HEALTH}`);
 console.log(`Adventurer.ROLES: ${Adventurer.ROLES}`);
 
 const healers = new AdventurerFactory("Healer");
-const robin = healers.generate("Robin");
-const gandalf = healers.generate("Gandalf");
+const robin = healers.generate("Jin");
+const gandalf = healers.generate("Kintaros");
 
 const fighters = new AdventurerFactory("Fighter");
-const aragorn = fighters.generate("Aragorn");
-const conan = fighters.generate("Conan");
+const aragorn = fighters.generate("Hikari");
+const conan = fighters.generate("Hidaki");
 
 console.log(`\nCreated ${healers.adventurers.length} healers`);
 console.log(`Created ${fighters.adventurers.length} fighters`);
@@ -175,8 +175,8 @@ aragorn.health = 100;
 const winner = robin.duel(aragorn);
 
 console.log("\n=== COMPANION DEMO ===");
-const leo = new Companion("Leo", "Cat", 8);
-const frank = new Companion("Frank", "Flea", 4);
+const leo = new Companion("Blair", "Cat", 8);
+const frank = new Companion("Myoga", "Flea", 4);
 frank.inventory.push("small hat", "sunglasses");
 
 robin.companion = leo;
