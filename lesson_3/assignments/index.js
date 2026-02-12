@@ -8,10 +8,6 @@ async function getUserData(id) {
     db3: db3
   };
 
-  try {
-    if (typeof id !== 'number') {
-      throw new Error('Invalid Input -- Not a Number');
-    }
 
     const dbName = await central(id);
     
@@ -43,10 +39,9 @@ async function getUserData(id) {
         bs: basicInfo.company.bs
       }
     };
-  } catch (error) {
-    throw new Error(`Failed to fetch user data: ${error.message}`);
   }
-}
+  
+
 
 
 async function runAllTests() {
