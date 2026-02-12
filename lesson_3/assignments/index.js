@@ -9,21 +9,17 @@ async function getUserData(id) {
   };
 
   try {
-  
     if (typeof id !== 'number') {
       throw new Error('Invalid Input -- Not a Number');
     }
 
-   
     const dbName = await central(id);
     
-  
     const [basicInfo, personalInfo] = await Promise.all([
       dbs[dbName](id),
       vault(id)
     ]);
 
- 
     return {
       id: id,
       name: personalInfo.name,
@@ -53,30 +49,44 @@ async function getUserData(id) {
 }
 
 
-console.log('Testing async/await version:');
+async function runAllTests() {
+  console.log('Testing async/await version:');
+  console.time('Total Time for All Operations');
+  
+  try {
+   
+    const user1 = await getUserData(1);
+    console.log('User 1:', user1);
+    
+    const user5 = await getUserData(5);
+    console.log('User 5:', user5);
+    
+    const user9 = await getUserData(9);
+    console.log('User 9:', user9);
+    
+    
+    try {
+      await getUserData(11);
+    } catch (error) {
+      console.error('Expected error - Out of Range:', error.message);
+    }
+    
+    try {
+      await getUserData('1');
+    } catch (error) {
+      console.error('Expected error - Not a Number:', error.message);
+    }
+    
+    try {
+      await getUserData(true);
+    } catch (error) {
+      console.error('Expected error - Not a Number:', error.message);
+    }
+    
+  } finally {
+    console.timeEnd('Total Time for All Operations');
+  }
+}
 
 
-getUserData(1)
-  .then(data => console.log('User 1:', data))
-  .catch(error => console.error('Error:', error.message));
-
-getUserData(5)
-  .then(data => console.log('User 5:', data))
-  .catch(error => console.error('Error:', error.message));
-
-getUserData(9)
-  .then(data => console.log('User 9:', data))
-  .catch(error => console.error('Error:', error.message));
-
-
-getUserData(11)
-  .then(data => console.log('User 11:', data))
-  .catch(error => console.error('Expected error - Out of Range:', error.message));
-
-getUserData('1')
-  .then(data => console.log('User "1":', data))
-  .catch(error => console.error('Expected error - Not a Number:', error.message));
-
-getUserData(true)
-  .then(data => console.log('User true:', data))
-  .catch(error => console.error('Expected error - Not a Number:', error.message));
+runAllTests();
