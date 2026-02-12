@@ -27,10 +27,8 @@ export function clear() {
 
 export function appendCarousel(element) {
   const carousel = document.querySelector("#carouselInner");
-
   const activeItem = document.querySelector(".carousel-item.active");
   if (!activeItem) element.classList.add("active");
-
   carousel.appendChild(element);
 }
 
@@ -45,6 +43,7 @@ export function start() {
     const carouselWidth = $(".carousel-inner")[0].scrollWidth;
     const cardWidth = $(".carousel-item").width();
     let scrollPosition = 0;
+    
     $("#carouselExampleControls .carousel-control-next").unbind();
     $("#carouselExampleControls .carousel-control-next").on(
       "click",
@@ -58,6 +57,7 @@ export function start() {
         }
       }
     );
+    
     $("#carouselExampleControls .carousel-control-prev").unbind();
     $("#carouselExampleControls .carousel-control-prev").on(
       "click",
