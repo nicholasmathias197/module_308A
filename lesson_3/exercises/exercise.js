@@ -26,12 +26,19 @@ myPromise.then((message) => {
 });
 
 // TODO 1: Run this code — what gets logged?
+const rejectedPromise = new Promise((resolve, reject)=>{
+  reject("Oops!! Went wrong!"); 
+}); 
 
 // TODO 2: Change resolve to reject — what happens?
 //         (Don't forget to change it back after testing!)
+rejectedPromise
+.then((message) => console.log (message))
+
+
 
 // TODO 3: Add a .catch() to handle the rejection.
-
+.catch((error)=> console.error("Caught:", error)); 
 
 // ------------------------------------------------------------
 // Exercise 2: Delayed Promise
@@ -53,18 +60,29 @@ console.log("This prints first!");
 
 // TODO 1: Predict the output order, then run to verify.
 // Predicted order: ???
-
+// Output order: "This prints first!", then "Hello, Alice!"
 // TODO 2: Create a delayedAdd(a, b) function that returns
 //         a Promise resolving to a + b after 500ms.
 
 function delayedAdd(a, b) {
   // TODO: Implement this
+  return new Promise((resolve)=> {
+    setTimeout(()=> {
+      resolve(a + b); 
+    }, 500);
+  });
 }
 
 // TODO 3: Chain a .then() that doubles the result.
 // delayedAdd(3, 4).then(/* ??? */).then(/* ??? */);
-
-
+delayedAdd(3,4)
+.then((sum)=> { 
+  console.log(`Sum: ${sum}`);
+  return sum * 2; 
+})
+.then((doubled)=> {
+  console.log(`Doubled: ${doubled}`);
+});
 // ------------------------------------------------------------
 // Exercise 3: Promise States
 // ------------------------------------------------------------
@@ -75,11 +93,13 @@ console.log("\n--- Exercise 3 ---");
 const p1 = new Promise((resolve) => setTimeout(resolve, 2000, "Done!"));
 
 // TODO 1: Log p1 immediately — observe the "pending" state.
-
+console.log("Immediately:",p1); 
 // TODO 2: Log it again after 3 seconds — observe "fulfilled."
-
+setTimeout(()=> console.log("After 3s:",p1),3000); 
 // TODO 3: Create a promise that rejects and observe "rejected."
-
+const p2 = new Promise((_, reject)=> setTimeout(reject, 1000, "Oops"));
+p2.catch(()=> {}); 
+setTimeout(()=> console.log("Rejected:",p2),2000);
 
 // ------------------------------------------------------------
 // Exercise 4: Chaining .then()
@@ -92,6 +112,7 @@ Promise.resolve(5)
   .then((val) => val * 2)
   .then((val) => val + 3)
   .then((val) => val.toString())
+  .then((val)=> "$"+ val)
   .then((val) => console.log(`Result: ${val}`));
 
 // TODO 1: Predict the final output, then verify.
@@ -122,7 +143,14 @@ function riskyOperation(value) {
 }
 
 // TODO 1: Call riskyOperation with Math.random(), add .then() and .catch()
-
+riskyOperation(Math.random())
+.then((msg)=> {
+  console.log(msg); 
+  return "Next step";
+})
+.then((msg)=> console.log("Second then:", msg))
+.catch((err)=> console.error(err))
+.finally(()=> console.log("Operation Complete"));
 // TODO 2: Add .finally(() => console.log("Operation complete"))
 
 // TODO 3: Chain a second .then() after the first — does it run
@@ -160,15 +188,25 @@ function fetchComments() {
 
 async function fetchAllData() {
   // TODO: Implement using Promise.all
-}
+console.time("Promise.all"); 
+
 
 // TODO 2: Time it — all three should complete in ~150ms (not 330ms).
 //         Use console.time() / console.timeEnd().
-
+   const [user, posts, comments] = await Promise.all([
+    fetchUser(),     
+    fetchPosts(),    
+    fetchComments(), 
+  ]);
 // TODO 3: Make one promise reject — what happens to Promise.all()?
 //         Write your answer as a comment.
+  console.timeEnd("Promise.all"); 
+  console.log("User:", user);
+  console.log("Posts:", posts);
+  console.log("Comments:", comments);
+ }
 
-
+ fetchAllData(); 
 // ------------------------------------------------------------
 // Exercise 7: Promise.race() and Promise.any()
 // ------------------------------------------------------------
@@ -181,12 +219,15 @@ const fast = new Promise((resolve) => setTimeout(resolve, 100, "fast"));
 const fail = new Promise((_, reject) => setTimeout(reject, 50, "failed"));
 
 // TODO 1: What does Promise.race([slow, fast]) resolve to?
+Promise.race([slow, fast]).then((val) => console.log("race(slow,fast):", val));
 
 // TODO 2: What does Promise.race([slow, fast, fail]) return?
 //         (Hint: fail is fastest)
+Promise.race([slow, fast, fail]).catch((err) => console.log("race(all):", err));
 
 // TODO 3: What does Promise.any([slow, fast, fail]) resolve to?
 //         (Hint: it ignores rejections)
+Promise.any([slow, fast, fail]).then((val) => console.log("any(all):", val));
 
 
 // ------------------------------------------------------------
@@ -209,8 +250,27 @@ console.log("\n--- Exercise 8 ---");
 // TODO 1: Write the async/await version:
 async function getData() {
   // TODO: Use await to get user, log it, then get posts, log it
-}
+const user = await fetchUser();      
+  console.log("User:", user); 
 
+  const posts = await fetchPosts();    
+  console.log("Posts:", posts);
+
+  const comments = await fetchComments(); 
+  console.log("Comments:", comments);
+}
+async function getDataConcurrent() {
+  
+  const [user, posts, comments] = await Promise.all([
+    fetchUser(),                     
+    fetchPosts(),
+    fetchComments(),
+  ]);
+  
+  console.log("User:", user);
+  console.log("Posts:", posts);
+  console.log("Comments:", comments);
+}
 // TODO 2: Add fetchComments() to the chain.
 
 // TODO 3: Challenge — Use Promise.all with await to run them
@@ -229,10 +289,18 @@ async function riskyFetch() {
   //   - try: await the result and log it
   //   - catch: log "Caught: " + the error
   //   - finally: log "Cleanup complete"
+  try {
+    const result = await riskyOperation(Math.random());
+    console.log(result);                 
+  } catch (error) { 
+    console.error("Caught:", error);     
+  } finally {
+   console.log("Cleanup complete"); 
+  }
 }
 
 // TODO 1: Run riskyFetch() several times.
-
+riskyFetch(); 
 // TODO 2: What code runs regardless of success/failure?
 //         Write your answer as a comment.
 
@@ -241,7 +309,20 @@ async function riskyFetch() {
 
 async function threeRiskyCalls() {
   // TODO: Implement — each call should be individually wrapped
+  for (let i = 0; i < 3; i++) {
+    try {
+      const result = await riskyOperation(Math.random());
+      console.log(`Call ${i + 1}: ${result}`);
+    } catch (error) {
+      console.error(`Call ${i + 1} failed: ${error}`);
+      // Continue to next call — don't re-throw
+    }
+  }
+  console.log("All three calls attempted.");
 }
+
+threeRiskyCalls();
+
 
 
 // ------------------------------------------------------------
@@ -255,9 +336,13 @@ console.log("\n--- Exercise 10 ---");
 // TODO 1: Implement the sequential version
 //         (each await waits for the previous)
 async function sequential() {
-  console.time("sequential");
+ console.time("sequential");
   // TODO: await fetchUser(), then fetchPosts(), then fetchComments()
+  const user = await fetchUser();
+  const posts = await fetchPosts(); 
+  const comments = await fetchComments(); 
   console.timeEnd("sequential"); // Should be ~330ms
+  return { user, posts, comments}; 
 }
 
 // TODO 2: Implement the concurrent version
@@ -265,7 +350,13 @@ async function sequential() {
 async function concurrent() {
   console.time("concurrent");
   // TODO: use Promise.all to run all three at once
+  const [ user, posts, comments]= await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+    fetchComments(),
+  ]);
   console.timeEnd("concurrent"); // Should be ~150ms
+  return {user, posts, comments}; 
 }
 
 // TODO 3: Answer these questions as comments:
@@ -288,7 +379,7 @@ Promise.resolve().then(() => console.log("3"));
 console.log("4");
 
 // TODO: Predict the output, then verify.
-// Predicted order: ???
+// Predicted order: 1,4,3,2
 
 // TODO: Explain why "3" comes before "2":
 // ???
@@ -324,12 +415,37 @@ function getPreferences(id) {
 //         Use Promise.all so it completes in ~100ms, not ~300ms.
 
 async function assembleUser(id) {
-  // TODO: Implement this
+  try {
+    console.time(`assembleUser(${id})`);
+
+    
+    const [basic, contact, prefs] = await Promise.all([
+      getBasicInfo(id),                 
+      getContactInfo(id),               
+      getPreferences(id),               
+    ]);
+    
+
+    console.timeEnd(`assembleUser(${id})`);
+
+
+    return { ...basic, ...contact, ...prefs };
+  } catch (error) {
+    console.error(`Failed to assemble user ${id}:`, error.message);
+    return null;                        
 }
+}
+assembleUser(1).then((user) => console.log("Assembled user:", user));
+
+
+assembleUser(-1).then((user) => console.log("Invalid result:", user));
+
+
 
 // TODO 2: Call assembleUser(1) and log the combined result.
 
 // TODO 3: Add error handling for invalid IDs.
+
 
 
 // ============================================================
